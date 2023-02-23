@@ -1,17 +1,15 @@
-import {
-    StyleSheet,
-    Pressable
-} from 'react-native';
 import React from 'react';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import {StyleSheet, Pressable} from 'react-native';
+import {observer} from 'mobx-react-lite';
+import {MaterialCommunityIcons} from '@expo/vector-icons';
 
-export default function CustomButton({
-                                         iconName,
-                                         isInvertedColor = false,
-                                         isBigSize = false,
-                                         isElevated = false,
-                                         onPress
-                                     }) {
+const CustomButton = observer(({
+                          iconName,
+                          isInvertedColor = false,
+                          isBigSize = false,
+                          isElevated = false,
+                          onPress
+                      }) => {
     return (
         <Pressable
             style={[
@@ -24,14 +22,15 @@ export default function CustomButton({
             <MaterialCommunityIcons
                 name={iconName}
                 size={isBigSize ? 60 : 40}
-                color={isInvertedColor ? "white" : "black"}/>
+                color={isInvertedColor ? 'white' : 'black'}
+            />
         </Pressable>
     );
-};
+});
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: "#fff",
+        backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
         margin: 5,
@@ -51,3 +50,5 @@ const styles = StyleSheet.create({
         elevation: 2
     }
 });
+
+export default CustomButton;

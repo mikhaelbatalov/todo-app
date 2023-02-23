@@ -1,58 +1,73 @@
 import React from 'react';
-import {
-    StyleSheet,
-    View
-} from 'react-native';
+import {StyleSheet, View} from 'react-native';
+import {observer} from 'mobx-react-lite';
+import {useAppStore} from '../stores/appStore';
 import CustomButton from './CustomButton';
 
-export default function ModalButtonsContainer({
-                                                  isAnyTodoSelected,
-                                                  handleCloseModal,
-                                                  handleDeleteSelectedTodoPress,
-                                                  handleAddNewTodoPress,
-                                                  handleSaveTodoPress,
-                                                  handleResetTodoPress
-                                         }) {
+const ModalButtonsContainer = observer(() => {
+    const store = useAppStore();
+    
+    function onResetTodoPress() {
+        store.handleResetTodoPress();
+    }
+
+    function onAddNewTodoPress() {
+        store.handleAddNewTodoPress();
+    }
+
+    function onSaveTodoPress() {
+        store.handleSaveTodoPress();
+    }
+
+    function onDeleteSelectedTodoPress() {
+        store.setIsOpenedModal(false);
+        store.handleDeleteTodoPress();
+    }
+
+    function onCloseModalPress() {
+        store.setIsOpenedModal(false);
+    }
+
     return (
         <View style={styles.buttonsContainer}>
-            {!isAnyTodoSelected && (
+            {!store.isAnyTodoSelected && (
                 <>
                     <CustomButton
                         iconName="refresh"
                         isElevated={true}
-                        onPress={handleResetTodoPress}
+                        onPress={onResetTodoPress}
                     />
                     <CustomButton
                         iconName="plus"
                         isBigSize={true}
                         isElevated={true}
-                        onPress={handleAddNewTodoPress}
+                        onPress={onAddNewTodoPress}
                     />
                 </>
             )}
-            {isAnyTodoSelected && (
+            {store.isAnyTodoSelected && (
                 <>
                     <CustomButton
                         iconName="trash-can-outline"
                         isElevated={true}
-                        onPress={handleDeleteSelectedTodoPress}
+                        onPress={onDeleteSelectedTodoPress}
                     />
                     <CustomButton
                         iconName="plus"
                         isBigSize={true}
                         isElevated={true}
-                        onPress={handleSaveTodoPress}
+                        onPress={onSaveTodoPress}
                     />
                 </>
             )}
             <CustomButton
                 iconName="window-close"
                 isElevated={true}
-                onPress={handleCloseModal}
+                onPress={onCloseModalPress}
             />
         </View>
     );
-};
+});
 
 const styles = StyleSheet.create({
     buttonsContainer: {
@@ -60,3 +75,5 @@ const styles = StyleSheet.create({
         alignItems: 'baseline'
     }
 });
+
+export default ModalButtonsContainer;

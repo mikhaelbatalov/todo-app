@@ -1,20 +1,19 @@
 import React from 'react';
 import {StyleSheet, Text, TextInput} from 'react-native';
+import {observer} from 'mobx-react-lite';
 
-export default function ItemModal({
-                                      title,
-                                      onChangeText,
-                                      value,
-                                      placeholder,
-                                      maxLength,
-                                      multiline = false,
-                                      numberOfLines
-                                  }) {
+const ItemModal = observer(({
+                                title,
+                                onChangeText,
+                                value,
+                                placeholder,
+                                maxLength,
+                                multiline = false,
+                                numberOfLines
+                            }) => {
     return (
         <>
-            <Text style={styles.title}>
-                {title}
-            </Text>
+            <Text style={styles.title}>{title}</Text>
             <TextInput
                 style={styles.textInput}
                 onChangeText={onChangeText}
@@ -26,7 +25,7 @@ export default function ItemModal({
             />
         </>
     );
-};
+});
 
 const styles = StyleSheet.create({
     title: {
@@ -43,3 +42,5 @@ const styles = StyleSheet.create({
         width: '100%'
     }
 });
+
+export default ItemModal;

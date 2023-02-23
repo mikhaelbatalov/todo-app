@@ -1,19 +1,14 @@
-import {
-    StyleSheet,
-    Text,
-    View,
-    Pressable
-} from 'react-native';
-import React, {useMemo} from 'react';
+import React, {useMemo, useCallback} from 'react';
+import {StyleSheet, Text, View, Pressable} from 'react-native';
+import {observer} from 'mobx-react-lite';
+import {useAppStore} from '../stores/appStore';
 import CustomButton from './CustomButton';
 
-export default function Item({
-                                 selectedId,
-                                 index,
-                                 item,
-                                 handleItemPress,
-                                 handleEditPress
-}) {
+const Item = observer(({
+                           index,
+                           item
+                       }) => {
+    const store = useAppStore();
 
     const itemColor = useMemo(() => {
         switch (index) {
@@ -30,16 +25,23 @@ export default function Item({
                 return '#23292e';
         }
     }, [index]);
-    const isSelected = useMemo(() => selectedId === item.id, [selectedId]);
+    const isSelected = useMemo(() => store.selectedId === item.id,
+        [store.selectedId, item.id]);
+
+    const onItemPress = useCallback(() => store.handleItemPress(item.id),
+        [store.handleItemPress, item.id]);
+    const onEditPress = useCallback(() => store.handleEditPress(item.id),
+        [store.handleEditPress, item.id]);
 
     return (
-        <Pressable style={[
-            styles.container,
-            {backgroundColor: itemColor},
-            isSelected && styles.selectedContainer,
-            item.isDone && styles.doneContainer
-        ]}
-                   onPress={handleItemPress}>
+        <Pressable
+            style={[
+                styles.container,
+                {backgroundColor: itemColor},
+                isSelected && styles.selectedContainer,
+                item.isDone && styles.doneContainer
+            ]}
+            onPress={onItemPress}>
             <View style={styles.titleContainer}>
                 <Text style={[
                     styles.title,
@@ -48,19 +50,17 @@ export default function Item({
                     {item.title}
                 </Text>
                 <CustomButton
-                    iconName='note-edit-outline'
+                    iconName="note-edit-outline"
                     isInvertedColor={true}
-                    onPress={handleEditPress}
+                    onPress={onEditPress}
                 />
             </View>
             {(isSelected && item.description) && (
-                <Text style={styles.description}>
-                    {item.description}
-                </Text>
+                <Text style={styles.description}>{item.description}</Text>
             )}
         </Pressable>
     );
-};
+});
 
 const styles = StyleSheet.create({
     container: {
@@ -108,3 +108,5 @@ const styles = StyleSheet.create({
         color: 'white'
     }
 });
+
+export default Item;

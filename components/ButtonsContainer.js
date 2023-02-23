@@ -1,65 +1,70 @@
 import React from 'react';
-import {
-    StyleSheet,
-    View
-} from 'react-native';
+import {StyleSheet, View} from 'react-native';
+import {observer} from 'mobx-react-lite';
+import {useAppStore} from '../stores/appStore';
 import CustomButton from './CustomButton';
 
-export default function ButtonsContainer({
-                                             isAnyTodoSelected,
-                                             isSelectedTodoDone,
-                                             handleNewTodoPress,
-                                             handleDeleteTodoPress,
-                                             handleDoneTogglePress
-                               }) {
+const ButtonsContainer = observer(() => {
+    const store = useAppStore();
+
+    function onNewTodoPress() {
+        store.handleNewTodoPress();
+    }
+
+    function onDeleteTodoPress() {
+        store.handleDeleteTodoPress();
+    }
+
+    function onDoneTogglePress() {
+        store.handleDoneTogglePress();
+    }
+
     return (
         <View style={styles.buttonsContainer}>
-            {!isAnyTodoSelected && (
-                <>
-                    <CustomButton
-                        iconName="plus"
-                        isBigSize={true}
-                        onPress={handleNewTodoPress}
-                    />
-                </>
+            {!store.isAnyTodoSelected && (
+                <CustomButton
+                    iconName='plus'
+                    isBigSize={true}
+                    onPress={onNewTodoPress}
+                />
             )}
-            {isAnyTodoSelected && (
+            {store.isAnyTodoSelected && (
                 <>
-                    {!isSelectedTodoDone && (
+                    {!store.isSelectedTodoDone && (
                         <>
                             <CustomButton
-                                iconName="trash-can-outline"
-                                onPress={handleDeleteTodoPress}
+                                iconName='trash-can-outline'
+                                onPress={onDeleteTodoPress}
                             />
                             <CustomButton
-                                iconName="check"
+                                iconName='check'
                                 isBigSize={true}
-                                onPress={handleDoneTogglePress}
+                                onPress={onDoneTogglePress}
                             />
                         </>
                     )}
-                    {isSelectedTodoDone && (
+                    {store.isSelectedTodoDone && (
                         <>
                             <CustomButton
-                                iconName="repeat"
-                                onPress={handleDoneTogglePress}
+                                iconName='repeat'
+                                onPress={onDoneTogglePress}
                             />
                             <CustomButton
-                                iconName="trash-can-outline"
+                                iconName='trash-can-outline'
                                 isBigSize={true}
-                                onPress={handleDeleteTodoPress}
+                                onPress={onDeleteTodoPress}
                             />
                         </>
                     )}
                     <CustomButton
-                        iconName="plus"
-                        onPress={handleNewTodoPress}
+                        iconName='plus'
+                        onPress={onNewTodoPress}
                     />
                 </>
             )}
         </View>
     );
-};
+});
 
 const styles = StyleSheet.create({
     buttonsContainer: {
@@ -67,3 +72,5 @@ const styles = StyleSheet.create({
         alignItems: 'baseline'
     }
 });
+
+export default ButtonsContainer;

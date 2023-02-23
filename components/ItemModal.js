@@ -1,45 +1,28 @@
-import React, {useState, useEffect} from 'react';
-import {Modal, StyleSheet, Text, View, ScrollView} from "react-native";
-import { SafeAreaView } from 'react-native-safe-area-context';
-
+import React, {useEffect} from 'react';
+import {Modal, StyleSheet, Text, View, ScrollView} from 'react-native';
+import {observer} from 'mobx-react-lite';
+import {useAppStore} from '../stores/appStore';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import CustomTextInput from './CustomTextInput';
 import CustomSlider from './CustomSlider';
 import ModalButtonsContainer from './ModalButtonsContainer';
 
-export default function ItemModal({
-                                      isOpenedModal,
-                                      isAnyTodoSelected,
-                                      selectedId,
-                                      items,
-                                      setIsOpenedModal,
-                                      setItems,
-                                      handleDeleteTodoPress
-                                  }) {
-
-    const [item, setItem] = useState({
-        id: null,
-        title: '',
-        description: '',
-        isDone: false,
-        importance: 0,
-        urgency: 0,
-        complexity: 0,
-        significance: 0
-    });
+const ItemModal = observer(() => {
+    const store = useAppStore();
 
     useEffect(() => {
-        if (!isOpenedModal) {
+        if (!store.isOpenedModal) {
             return;
         }
 
-        if (isAnyTodoSelected) {
-            setItem(items.find(item => item.id === selectedId));
+        if (store.isAnyTodoSelected) {
+            store.setItem({...store.items.find(item => item.id === store.selectedId)});
             return;
         }
 
-        setItem(({
+        store.setItem({
             id: uuidv4(),
             title: '',
             description: '',
@@ -48,108 +31,62 @@ export default function ItemModal({
             urgency: 0,
             complexity: 0,
             significance: 0
-        }))
-    }, [isAnyTodoSelected, items, selectedId, isOpenedModal]);
+        });
+    }, [store.isAnyTodoSelected, store.items, store.selectedId, store.isOpenedModal]);
 
     useEffect(() => {
-        const newSignificance = item.importance === 0 || item.urgency === 0 || item.complexity === 0
+        const newSignificance = store.item.importance === 0 || store.item.urgency === 0 || store.item.complexity === 0
             ? 0
-            : Math.floor(item.importance * item.urgency / item.complexity * 10) / 10;
+            : Math.floor(store.item.importance * store.item.urgency / store.item.complexity * 10) / 10;
 
-        handleItemChange('significance', newSignificance);
-    }, [item.importance, item.urgency, item.complexity]);
+        store.handleItemChange('significance', newSignificance);
+    }, [store.item.importance, store.item.urgency, store.item.complexity]);
 
-    function handleItemChange(name, value) {
-        setItem(prevItem => ({
-            ...prevItem,
-            [name]: value
-        }));
+    function onRequestClose() {
+        store.setIsOpenedModal(false);
     }
 
-    function handleCloseModal() {
-        setIsOpenedModal(false);
+    function onTitleChange(value) {
+        store.handleItemChange('title', value);
     }
 
-    function handleDeleteSelectedTodoPress() {
-        handleCloseModal();
-        handleDeleteTodoPress();
+    function onDescriptionChange(value) {
+        store.handleItemChange('description', value)
     }
 
-    function handleAddNewTodoPress() {
-        setItems(prevItems => [
-            ...prevItems,
-            {...item}
-        ]);
-        handleCloseModal();
+    function onImportanceChange(value) {
+        store.handleItemChange('importance', value);
     }
 
-    function handleSaveTodoPress() {
-        setItems(prevItems => {
-            const copiedItems = [...prevItems];
-            const editedItemIndex = copiedItems.findIndex(item => item.id === selectedId);
-
-            copiedItems.splice(editedItemIndex, 1, {...item});
-
-            return copiedItems;
-        });
-        handleCloseModal();
+    function onUrgencyChange(value) {
+        store.handleItemChange('urgency', value);
     }
 
-    function handleResetTodoPress() {
-        setItem(prevItem => ({
-            ...prevItem,
-            title: '',
-            description: '',
-            isDone: false,
-            importance: 0,
-            urgency: 0,
-            complexity: 0,
-            significance: 0
-        }))
-    }
-
-    function handleItemTitleChange(value) {
-        handleItemChange('title', value);
-    }
-
-    function handleItemDescriptionChange(value) {
-        handleItemChange('description', value)
-    }
-
-    function handleItemImportanceChange(value) {
-        handleItemChange('importance', value);
-    }
-
-    function handleItemUrgencyChange(value) {
-        handleItemChange('urgency', value);
-    }
-
-    function handleItemComplexityChange(value) {
-        handleItemChange('complexity', value);
+    function onComplexityChange(value) {
+        store.handleItemChange('complexity', value);
     }
 
     return (
         <Modal
             animationType='slide'
             transparent={true}
-            visible={isOpenedModal}
-            onRequestClose={handleCloseModal}>
-            <SafeAreaView
-                style={styles.wrapper}>
+            visible={store.isOpenedModal}
+            onRequestClose={onRequestClose}>
+            <SafeAreaView style={styles.wrapper}>
                 <View style={styles.container}>
-                    <Text style={styles.title}>Todo {isAnyTodoSelected ? 'editing' : 'creating'}</Text>
+                    <Text style={styles.title}>{`Todo ${store.isAnyTodoSelected ? 'editing' : 'creating'}`}</Text>
                     <ScrollView style={{alignSelf: 'stretch'}}>
                         <CustomTextInput
                             title='Name'
-                            onChangeText={handleItemTitleChange}
-                            value={item.title}
+                            onChangeText={onTitleChange}
+                            value={store.item.title}
                             placeholder='Todo Name'
                             maxLength={100}
                         />
                         <CustomTextInput
                             title='Description'
-                            onChangeText={handleItemDescriptionChange}
-                            value={item.description}
+                            onChangeText={onDescriptionChange}
+                            value={store.item.description}
                             placeholder='Todo Description'
                             maxLength={400}
                             multiline={true}
@@ -157,49 +94,40 @@ export default function ItemModal({
                         />
                         <CustomSlider
                             title='Importance'
-                            value={item.importance}
-                            onSlidingComplete={handleItemImportanceChange}
+                            value={store.item.importance}
+                            onSlidingComplete={onImportanceChange}
                         />
                         <CustomSlider
                             title='Urgency'
-                            value={item.urgency}
-                            onSlidingComplete={handleItemUrgencyChange}
+                            value={store.item.urgency}
+                            onSlidingComplete={onUrgencyChange}
                         />
                         <CustomSlider
                             title='Complexity'
-                            value={item.complexity}
-                            onSlidingComplete={handleItemComplexityChange}
+                            value={store.item.complexity}
+                            onSlidingComplete={onComplexityChange}
                         />
                     </ScrollView>
-                    <ModalButtonsContainer
-                        isAnyTodoSelected={isAnyTodoSelected}
-                        handleCloseModal={handleCloseModal}
-                        handleDeleteSelectedTodoPress={handleDeleteSelectedTodoPress}
-                        handleAddNewTodoPress={handleAddNewTodoPress}
-                        handleSaveTodoPress={handleSaveTodoPress}
-                        handleResetTodoPress={handleResetTodoPress}
-                    />
+                    <ModalButtonsContainer/>
                 </View>
             </SafeAreaView>
         </Modal>
     );
-};
+});
 
 const styles = StyleSheet.create({
     wrapper: {
         flex: 1,
         justifyContent: 'flex-end',
-
     },
     container: {
         alignItems: 'center',
-        backgroundColor: "#fff",
+        backgroundColor: '#fff',
         paddingRight: 20,
         paddingLeft: 20,
         borderTopRightRadius: 20,
         borderTopLeftRadius: 20,
         maxHeight: '100%'
-
     },
     title: {
         fontSize: 25,
@@ -209,3 +137,5 @@ const styles = StyleSheet.create({
         fontVariant: ['small-caps']
     }
 });
+
+export default ItemModal;

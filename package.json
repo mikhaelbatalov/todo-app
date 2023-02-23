@@ -14,6 +14,8 @@
     "expo": "~47.0.12",
     "expo-navigation-bar": "~2.0.1",
     "expo-status-bar": "~1.4.2",
+    "mobx": "^6.8.0",
+    "mobx-react-lite": "^3.4.0",
     "react": "18.1.0",
     "react-native": "0.70.5",
     "react-native-get-random-values": "^1.8.0",
