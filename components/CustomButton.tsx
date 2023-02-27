@@ -3,13 +3,21 @@ import {StyleSheet, Pressable} from 'react-native';
 import {observer} from 'mobx-react-lite';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 
+type CustomButtonProps = {
+    iconName: 'plus' | 'note-edit-outline' | 'check' | 'repeat' | 'trash-can-outline' | 'refresh' | 'window-close' | 'content-save-outline',
+    isInvertedColor?: boolean,
+    isBigSize?: boolean,
+    isElevated?: boolean,
+    onPress: () => void
+};
+
 const CustomButton = observer(({
                           iconName,
                           isInvertedColor = false,
                           isBigSize = false,
                           isElevated = false,
                           onPress
-                      }) => {
+                      }: CustomButtonProps) => {
     return (
         <Pressable
             style={[

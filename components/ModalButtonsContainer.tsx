@@ -7,21 +7,21 @@ import CustomButton from './CustomButton';
 const ModalButtonsContainer = observer(() => {
     const store = useAppStore();
     
-    function onResetTodoPress() {
-        store.handleResetTodoPress();
+    function onResetTaskPress() {
+        store.handleResetTaskPress();
     }
 
-    function onAddNewTodoPress() {
-        store.handleAddNewTodoPress();
+    function onAddNewTaskPress() {
+        store.handleAddTaskPress();
     }
 
-    function onSaveTodoPress() {
-        store.handleSaveTodoPress();
+    function onSaveTaskPress() {
+        store.handleSaveTaskPress();
     }
 
-    function onDeleteSelectedTodoPress() {
+    function onDeleteSelectedTaskPress() {
         store.setIsOpenedModal(false);
-        store.handleDeleteTodoPress();
+        store.handleDeleteTaskPress();
     }
 
     function onCloseModalPress() {
@@ -30,38 +30,38 @@ const ModalButtonsContainer = observer(() => {
 
     return (
         <View style={styles.buttonsContainer}>
-            {!store.isAnyTodoSelected && (
+            {!store.isAnyTaskSelected && (
                 <>
                     <CustomButton
-                        iconName="refresh"
+                        iconName='refresh'
                         isElevated={true}
-                        onPress={onResetTodoPress}
+                        onPress={onResetTaskPress}
                     />
                     <CustomButton
-                        iconName="plus"
+                        iconName='plus'
                         isBigSize={true}
                         isElevated={true}
-                        onPress={onAddNewTodoPress}
+                        onPress={onAddNewTaskPress}
                     />
                 </>
             )}
-            {store.isAnyTodoSelected && (
+            {store.isAnyTaskSelected && (
                 <>
                     <CustomButton
-                        iconName="trash-can-outline"
+                        iconName='trash-can-outline'
                         isElevated={true}
-                        onPress={onDeleteSelectedTodoPress}
+                        onPress={onDeleteSelectedTaskPress}
                     />
                     <CustomButton
-                        iconName="plus"
+                        iconName='content-save-outline'
                         isBigSize={true}
                         isElevated={true}
-                        onPress={onSaveTodoPress}
+                        onPress={onSaveTaskPress}
                     />
                 </>
             )}
             <CustomButton
-                iconName="window-close"
+                iconName='window-close'
                 isElevated={true}
                 onPress={onCloseModalPress}
             />

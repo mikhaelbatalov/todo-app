@@ -2,7 +2,17 @@ import React from 'react';
 import {StyleSheet, Text, TextInput} from 'react-native';
 import {observer} from 'mobx-react-lite';
 
-const ItemModal = observer(({
+type CustomTextInputProps = {
+    title: string,
+    onChangeText: (value: string) => void,
+    value: string,
+    placeholder: string,
+    maxLength: number,
+    multiline?: boolean,
+    numberOfLines?: number
+};
+
+const CustomTextInput = observer(({
                                 title,
                                 onChangeText,
                                 value,
@@ -10,7 +20,7 @@ const ItemModal = observer(({
                                 maxLength,
                                 multiline = false,
                                 numberOfLines
-                            }) => {
+                            }: CustomTextInputProps) => {
     return (
         <>
             <Text style={styles.title}>{title}</Text>
@@ -43,4 +53,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default ItemModal;
+export default CustomTextInput;

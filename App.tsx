@@ -1,13 +1,18 @@
 import React, {useEffect} from 'react';
 import {StyleSheet, Text, FlatList} from 'react-native';
 import {observer} from 'mobx-react-lite';
-import {useAppStore} from './stores/appStore';
+import {useAppStore, Task as TaskType} from './stores/appStore';
 import {StatusBar} from 'expo-status-bar';
 import * as NavigationBar from 'expo-navigation-bar';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import ButtonsContainer from './components/ButtonsContainer';
-import Item from './components/Item';
-import ItemModal from './components/ItemModal'
+import Task from './components/Task';
+import TaskModal from './components/TaskModal'
+
+type RenderTaskProps = {
+    item: TaskType,
+    index: number
+};
 
 const App = observer(() => {
     const store = useAppStore();
@@ -25,28 +30,28 @@ const App = observer(() => {
         })();
     }, []);
 
-    const renderItem = ({item, index}) => {
+    const renderTask = ({item, index}: RenderTaskProps) => {
         return (
-            <Item
+            <Task
                 index={index}
-                item={item}
+                task={item}
             />
         );
     };
-    const getKeyExtractor = item => item.id;
+    const getKeyExtractor = (item: TaskType) : string => item.id || '';
 
     return (
         <SafeAreaView style={styles.appContainer}>
             <Text style={styles.appTitle}>Todos For Today</Text>
             <FlatList
                 style={styles.flatList}
-                data={store.filteredItems}
-                renderItem={renderItem}
+                data={store.filteredTasks}
+                renderItem={renderTask}
                 keyExtractor={getKeyExtractor}
             />
             <ButtonsContainer/>
             <StatusBar style='light'/>
-            <ItemModal/>
+            <TaskModal/>
         </SafeAreaView>
     );
 });

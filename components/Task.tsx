@@ -1,16 +1,21 @@
 import React, {useMemo, useCallback} from 'react';
 import {StyleSheet, Text, View, Pressable} from 'react-native';
 import {observer} from 'mobx-react-lite';
-import {useAppStore} from '../stores/appStore';
+import {useAppStore, Task as TaskType} from '../stores/appStore';
 import CustomButton from './CustomButton';
 
-const Item = observer(({
+type TaskProps = {
+    task: TaskType,
+    index: number
+};
+
+const Task = observer(({
                            index,
-                           item
-                       }) => {
+                           task
+                       }: TaskProps) => {
     const store = useAppStore();
 
-    const itemColor = useMemo(() => {
+    const taskColor = useMemo(() => {
         switch (index) {
             case 0:
                 return '#ac1447';
@@ -25,38 +30,38 @@ const Item = observer(({
                 return '#23292e';
         }
     }, [index]);
-    const isSelected = useMemo(() => store.selectedId === item.id,
-        [store.selectedId, item.id]);
+    const isSelected = useMemo(() => store.selectedId === task.id,
+        [store.selectedId, task.id]);
 
-    const onItemPress = useCallback(() => store.handleItemPress(item.id),
-        [store.handleItemPress, item.id]);
-    const onEditPress = useCallback(() => store.handleEditPress(item.id),
-        [store.handleEditPress, item.id]);
+    const onTaskPress = useCallback(() => store.handleTaskPress(task.id),
+        [store.handleTaskPress, task.id]);
+    const onEditPress = useCallback(() => store.handleEditPress(task.id),
+        [store.handleEditPress, task.id]);
 
     return (
         <Pressable
             style={[
                 styles.container,
-                {backgroundColor: itemColor},
+                {backgroundColor: taskColor},
                 isSelected && styles.selectedContainer,
-                item.isDone && styles.doneContainer
+                task.isDone && styles.doneContainer
             ]}
-            onPress={onItemPress}>
+            onPress={onTaskPress}>
             <View style={styles.titleContainer}>
                 <Text style={[
                     styles.title,
-                    item.isDone && styles.doneTitle
+                    task.isDone && styles.doneTitle
                 ]}>
-                    {item.title}
+                    {task.title}
                 </Text>
                 <CustomButton
-                    iconName="note-edit-outline"
+                    iconName='note-edit-outline'
                     isInvertedColor={true}
                     onPress={onEditPress}
                 />
             </View>
-            {(isSelected && item.description) && (
-                <Text style={styles.description}>{item.description}</Text>
+            {(isSelected && task.description) && (
+                <Text style={styles.description}>{task.description}</Text>
             )}
         </Pressable>
     );
@@ -109,4 +114,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Item;
+export default Task;

@@ -3,11 +3,17 @@ import {StyleSheet, Text} from 'react-native';
 import {observer} from 'mobx-react-lite';
 import Slider from '@react-native-community/slider';
 
-const ItemModal = observer(({
+type CustomSliderProps = {
+    title: string,
+    value: number,
+    onSlidingComplete: (value: number) => void
+};
+
+const CustomSlider = observer(({
                                 title,
                                 value,
                                 onSlidingComplete
-                            }) => {
+                            }: CustomSliderProps) => {
     return (
         <>
             <Text style={styles.title}>{title}</Text>
@@ -37,4 +43,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default ItemModal;
+export default CustomSlider;

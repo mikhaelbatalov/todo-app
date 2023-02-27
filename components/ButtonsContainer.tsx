@@ -7,12 +7,12 @@ import CustomButton from './CustomButton';
 const ButtonsContainer = observer(() => {
     const store = useAppStore();
 
-    function onNewTodoPress() {
-        store.handleNewTodoPress();
+    function onNewTaskPress() {
+        store.handleNewTaskPress();
     }
 
-    function onDeleteTodoPress() {
-        store.handleDeleteTodoPress();
+    function onDeleteTaskPress() {
+        store.handleDeleteTaskPress();
     }
 
     function onDoneTogglePress() {
@@ -21,20 +21,20 @@ const ButtonsContainer = observer(() => {
 
     return (
         <View style={styles.buttonsContainer}>
-            {!store.isAnyTodoSelected && (
+            {!store.isAnyTaskSelected && (
                 <CustomButton
                     iconName='plus'
                     isBigSize={true}
-                    onPress={onNewTodoPress}
+                    onPress={onNewTaskPress}
                 />
             )}
-            {store.isAnyTodoSelected && (
+            {store.isAnyTaskSelected && (
                 <>
-                    {!store.isSelectedTodoDone && (
+                    {!store.isSelectedTaskDone && (
                         <>
                             <CustomButton
                                 iconName='trash-can-outline'
-                                onPress={onDeleteTodoPress}
+                                onPress={onDeleteTaskPress}
                             />
                             <CustomButton
                                 iconName='check'
@@ -43,7 +43,7 @@ const ButtonsContainer = observer(() => {
                             />
                         </>
                     )}
-                    {store.isSelectedTodoDone && (
+                    {store.isSelectedTaskDone && (
                         <>
                             <CustomButton
                                 iconName='repeat'
@@ -52,13 +52,13 @@ const ButtonsContainer = observer(() => {
                             <CustomButton
                                 iconName='trash-can-outline'
                                 isBigSize={true}
-                                onPress={onDeleteTodoPress}
+                                onPress={onDeleteTaskPress}
                             />
                         </>
                     )}
                     <CustomButton
                         iconName='plus'
-                        onPress={onNewTodoPress}
+                        onPress={onNewTaskPress}
                     />
                 </>
             )}
